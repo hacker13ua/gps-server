@@ -71,7 +71,20 @@ public class GPSTrackerValidator implements Runnable
         }
     }
 
-    public static Set<String> getAvailableTrackerUIDs()
+    public static boolean isBucketValid(final String bucketUID)
+    {
+        readIDsLock.lock();
+        try
+        {
+            return AVAILABLE_UID_FILE_PATH.isEmpty() || availableTrackerUIDs.contains(bucketUID);
+        }
+        finally
+        {
+            readIDsLock.unlock();
+        }
+    }
+
+    /*public static Set<String> getAvailableTrackerUIDs()
     {
         readIDsLock.lock();
         try
@@ -82,5 +95,5 @@ public class GPSTrackerValidator implements Runnable
         {
             readIDsLock.unlock();
         }
-    }
+    }*/
 }

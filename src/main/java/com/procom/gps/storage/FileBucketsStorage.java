@@ -1,20 +1,17 @@
 package com.procom.gps.storage;
 
-import com.esotericsoftware.yamlbeans.YamlException;
-import com.esotericsoftware.yamlbeans.YamlWriter;
 import com.procom.gps.AbstractGPSBucket;
-import com.procom.gps.GL300Bucket;
 import com.procom.gps.GPSTrackerValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.text.DateFormat;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author Evgeniy Surovskiy
@@ -28,7 +25,7 @@ public class FileBucketsStorage implements BucketsStorage
     @Override
     public void saveSingleBucket(final AbstractGPSBucket bucket)
     {
-        if (GPSTrackerValidator.AVAILABLE_UID_FILE_PATH.isEmpty() || GPSTrackerValidator.getAvailableTrackerUIDs().contains(bucket.getTrackerUniqueId()))
+        if(isPossibleToSave(bucket))
         {
             try (FileWriter out = new FileWriter(BASE_PATH.isEmpty() ? bucket.getTrackerUniqueId() : BASE_PATH + File.separator + bucket.getTrackerUniqueId(), true))
             {
@@ -47,11 +44,13 @@ public class FileBucketsStorage implements BucketsStorage
     }
 
     @Override
-    @Deprecated
     public void saveBucketsList(final List<AbstractGPSBucket> buckets)
     {
-//        for(List<AbstractGPSBucket> buckets : gpsTrackerToBuckets.values())
-//        {
+        if (buckets == null || buckets.isEmpty())
+        {
+            LOG.warn("Can't save empty list");
+            return;
+        }
         LOG.info("Starting save " + buckets.size() + " buckets to file");
         Collections.sort(buckets, new Comparator<AbstractGPSBucket>()
         {
@@ -61,51 +60,28 @@ public class FileBucketsStorage implements BucketsStorage
                 return o1.getDate().compareTo(o2.getDate());
             }
         });
-
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final YamlWriter yamlWriter = new YamlWriter(new OutputStreamWriter(outputStream));
-        try
+        if (isPossibleToSave(buckets.get(0)))
         {
-            yamlWriter.getConfig().setClassTag("GL300", GL300Bucket.class);
-            yamlWriter.write(buckets);
-            yamlWriter.close();
-        }
-        catch(YamlException e)
-        {
-            LOG.error("Error while serialize by yaml ", e);
-        }
-        final SimpleDateFormat folderFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-        StringBuilder filePath = new StringBuilder(BASE_PATH).append(File.separator)
-                .append(buckets.get(0).getTrackerUniqueId())
-                .append(File.separator)
-                .append(folderFormat.format(buckets.get(0).getDate()));
-        final File reportsDirectory = new File(filePath.toString().replaceAll("/", File.separator));
-        if(!reportsDirectory.exists())
-        {
-            if(!reportsDirectory.mkdirs())
+            final SimpleDateFormat simpleDateFormatFile = new SimpleDateFormat("ddMMyyyy-hh:mm:ss");
+            final String fileName = buckets.get(0).getTrackerUniqueId() + "-" + simpleDateFormatFile.format(buckets.get(0).getDate());
+            try (FileWriter out = new FileWriter(BASE_PATH.isEmpty() ? fileName : BASE_PATH + File.separator + fileName, true))
             {
-                LOG.error("Can not create report directory: " + filePath);
+                final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy-hh:mm:ss");
+                for (final AbstractGPSBucket bucket : buckets)
+                {
+                    out.write(simpleDateFormat.format(bucket.getDate()) + " " + bucket.getLatitude() + " " + bucket.getLongitude() + "\n");
+                }
             }
-        }
-        final File file = new File(filePath.append(File.separator).append(buckets.get(0).getDate()).append('-').append(buckets.get(buckets.size() - 1).getDate()).append(".txt").toString());
-        try
-        {
-            final FileOutputStream fop = new FileOutputStream(file);
-
-            // if file doesn't exists, then create it
-            if(!file.exists())
+            catch(IOException e)
             {
-                file.createNewFile();
+                e.printStackTrace();
             }
-
-            fop.write(outputStream.toByteArray());
-            fop.flush();
-            fop.close();
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
         }
     }
-//    }
+
+    private boolean isPossibleToSave(final AbstractGPSBucket bucket)
+    {
+        return GPSTrackerValidator.isBucketValid(bucket.getTrackerUniqueId());
+    }
+
 }

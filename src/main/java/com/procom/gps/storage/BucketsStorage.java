@@ -12,6 +12,5 @@ public interface BucketsStorage
 {
     void saveSingleBucket(AbstractGPSBucket bucket);
 
-    @Deprecated
     void saveBucketsList(List<AbstractGPSBucket> buckets);
 }
