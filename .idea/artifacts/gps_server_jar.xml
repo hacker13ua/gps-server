@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="gps-server:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/gps_server_jar</output-path>
+    <root id="archive" name="gps-server.jar">
+      <element id="module-output" name="gps-server" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.0.6/logback-classic-1.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.0.6/logback-core-1.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/netty/netty-all/4.0.24.Final/netty-all-4.0.24.Final.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/esotericsoftware/yamlbeans/yamlbeans/1.06/yamlbeans-1.06.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
