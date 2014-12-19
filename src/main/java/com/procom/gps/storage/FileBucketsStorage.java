@@ -51,7 +51,6 @@ public class FileBucketsStorage implements BucketsStorage
             LOG.warn("Can't save empty list");
             return;
         }
-        LOG.info("Starting save " + buckets.size() + " buckets to file");
         Collections.sort(buckets, new Comparator<AbstractGPSBucket>()
         {
             @Override
@@ -62,6 +61,7 @@ public class FileBucketsStorage implements BucketsStorage
         });
         if (isPossibleToSave(buckets.get(0)))
         {
+            LOG.info("Starting save " + buckets.size() + " buckets to file");
             final SimpleDateFormat simpleDateFormatFile = new SimpleDateFormat("ddMMyyyy-hh:mm:ss");
             final String fileName = buckets.get(0).getTrackerUniqueId() + "-" + simpleDateFormatFile.format(buckets.get(0).getDate());
             try (FileWriter out = new FileWriter(BASE_PATH.isEmpty() ? fileName : BASE_PATH + File.separator + fileName, true))
@@ -76,6 +76,10 @@ public class FileBucketsStorage implements BucketsStorage
             {
                 e.printStackTrace();
             }
+        }
+        else
+        {
+            LOG.warn("Drop message from tracker " + buckets.get(0).getTrackerUniqueId());
         }
     }
 

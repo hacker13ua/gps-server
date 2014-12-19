@@ -27,8 +27,15 @@ public class GPSBucketsCollector
         final AbstractGPSBucket bucket = GL300ResponseParser.parse(rawString);
         if(bucket != null)
         {
-            bucketsToSave.put(bucket.getTrackerUniqueId(), bucket);
-            trySaveBuckets(bucket.getTrackerUniqueId());
+            if(GPSTrackerValidator.isBucketValid(bucket.getTrackerUniqueId()))
+            {
+                bucketsToSave.put(bucket.getTrackerUniqueId(), bucket);
+                trySaveBuckets(bucket.getTrackerUniqueId());
+            }
+            else
+            {
+                LOG.warn("Drop message from tracker " + bucket.getTrackerUniqueId());
+            }
         }
     }
 
