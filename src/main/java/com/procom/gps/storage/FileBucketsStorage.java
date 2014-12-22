@@ -62,7 +62,7 @@ public class FileBucketsStorage implements BucketsStorage
         if (isPossibleToSave(buckets.get(0)))
         {
             LOG.info("Starting save " + buckets.size() + " buckets to file");
-            final SimpleDateFormat simpleDateFormatFile = new SimpleDateFormat("ddMMyyyy-hh:mm:ss");
+            final SimpleDateFormat simpleDateFormatFile = new SimpleDateFormat("dd_MM_yyyy-hh_mm_ss");
             final String fileName = buckets.get(0).getTrackerUniqueId() + "-" + simpleDateFormatFile.format(buckets.get(0).getDate());
             try (FileWriter out = new FileWriter(BASE_PATH.isEmpty() ? fileName : BASE_PATH + File.separator + fileName, true))
             {

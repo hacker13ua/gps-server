@@ -16,6 +16,7 @@ public class GL300ResponseParser
 
     public static GL300Bucket parse(final String response)
     {
+        LOG.debug("Response string to parse = " + response);
         final String[] responseInfo = response.split(",");
         final String header = responseInfo[0];
         if(GTFRI.equals(header.split(":")[1]))

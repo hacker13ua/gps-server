@@ -53,7 +53,7 @@ public class GPSTrackerValidator implements Runnable
             availableTrackerUIDs.clear();
             while((line = reader.readLine()) != null)
             {
-                availableTrackerUIDs.add(line);
+                availableTrackerUIDs.add(line.trim());
             }
             LOG.debug("Available ids: " + availableTrackerUIDs);
         }
