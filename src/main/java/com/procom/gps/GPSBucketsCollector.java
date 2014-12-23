@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class GPSBucketsCollector
 {
     private static final Logger LOG = LoggerFactory.getLogger(GPSBucketsCollector.class);
-    private static final int BATCH_SIZE = 3;
+    private static final int BATCH_SIZE = Integer.parseInt(System.getProperty("batch-size","5"));
 
     private final BucketsStorage bucketsStorage = new FileBucketsStorage();
     private final Multimap<String, AbstractGPSBucket> bucketsToSave = Multimaps.synchronizedListMultimap(ArrayListMultimap.<String, AbstractGPSBucket>create(50, BATCH_SIZE));
