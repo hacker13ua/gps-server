@@ -20,7 +20,7 @@ public class NettyGPSServer implements GPSServer
     {
         // Configure the server.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup(0);
         try
         {
             ServerBootstrap bootstrap = new ServerBootstrap();
